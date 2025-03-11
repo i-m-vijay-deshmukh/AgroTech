@@ -1,38 +1,200 @@
 <!DOCTYPE html>
-
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>AI</title>
+    <title>ChatBot UI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./styles.css?v=8" />
-    <link rel="icon" type="image/png" href="Screenshot 2025-03-07 121610.png" />
+    <style>
+      /* -------------------------
+         GLOBAL STYLES
+      ------------------------- */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        /* Purple gradient background */
+        background: linear-gradient(135deg, #9c27b0, #6a1b9a);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* -------------------------
+         CHAT CONTAINER
+      ------------------------- */
+      .chat-container {
+        width: 80%;
+        max-width: 500px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      @media (max-width: 768px) {
+        .chat-container {
+          width: 100%;
+          height: 100vh; /* If you'd like it to fill the screen on mobile */
+          border-radius: 0;
+        }
+      }
+
+      /* -------------------------
+         HEADER
+      ------------------------- */
+      .chat-header {
+        background: #f3e5f5; /* A light purple shade */
+        padding: 15px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 16px;
+        color: #4a148c;
+      }
+
+      /* -------------------------
+         CHAT BODY
+      ------------------------- */
+      .chat-body {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+      }
+
+      /* -------------------------
+         MESSAGE BUBBLES
+      ------------------------- */
+      .message-row {
+        display: flex;
+        margin-bottom: 10px;
+      }
+
+      /* Bot messages on the left */
+      .bot-message {
+        align-items: flex-start;
+      }
+
+      .bot-message .message-bubble {
+        background: #f3e5f5; /* Light purple bubble */
+        color: #4a148c;
+        border-top-left-radius: 0;
+        border-top-right-radius: 16px;
+        border-bottom-left-radius: 16px;
+        border-bottom-right-radius: 16px;
+      }
+
+      /* User messages on the right */
+      .user-message {
+        justify-content: flex-end;
+        align-items: flex-start;
+      }
+
+      .user-message .message-bubble {
+        background: #ce93d8; /* A slightly darker purple bubble */
+        color: #fff;
+        border-top-left-radius: 16px;
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 16px;
+        border-bottom-right-radius: 16px;
+      }
+
+      /* Bubble styling */
+      .message-bubble {
+        max-width: 70%;
+        padding: 10px 15px;
+        line-height: 1.4;
+      }
+
+      /* Quick reply buttons (Yes, No) */
+      .quick-reply {
+        background: #ce93d8;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 16px;
+        margin: 5px 5px 0 0;
+        display: inline-block;
+        cursor: pointer;
+      }
+
+      .quick-reply:hover {
+        background: #ba68c8;
+      }
+
+      /* -------------------------
+         FOOTER
+      ------------------------- */
+      .chat-footer {
+        border-top: 1px solid #e0e0e0;
+        padding: 10px;
+        display: flex;
+        gap: 10px;
+      }
+
+      .chat-footer input {
+        flex: 1;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 14px;
+      }
+
+      .chat-footer button {
+        background: #ab47bc;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .chat-footer button:hover {
+        background: #9c27b0;
+      }
+    </style>
   </head>
   <body>
-    <div class="logo-container">
-      <a href="https://www.youtube.com/@CodingNexus"
-      ><img
-          alt="logo"
-          src="./logo.png"
-          width="150px"
-          height="150px"
-          class="logo"
-      /></a>
-    </div>
-    <div class="chat-box">
-      <div class="chat-box-header">ChatBot</div>
-      <div class="chat-box-body">
-        <div class="response">
-          <p>Welcome to the ChatBot AI, how can I help you today?</p>
+    <div class="chat-container">
+      <!-- HEADER -->
+      <div class="chat-header">We're online...</div>
+
+      <!-- CHAT BODY -->
+      <div class="chat-body">
+        <!-- Bot message -->
+        <div class="message-row bot-message">
+          <div class="message-bubble">
+            Hi there! Nice to see you &#128522; 
+            <br />
+            We have a 10% promo code for new customers! Would you like to get one now? &#127873;
+          </div>
+        </div>
+
+        <!-- User quick reply options -->
+        <div class="message-row user-message">
+          <!-- Instead of one bubble, show quick reply style -->
+          <span class="quick-reply">Yes, sure!</span>
+          <span class="quick-reply">No, Thanks</span>
+        </div>
+
+        <!-- Bot message -->
+        <div class="message-row bot-message">
+          <div class="message-bubble">
+            Cool! What's your email address then?
+          </div>
         </div>
       </div>
-      <div class="chat-box-footer">
-        <input type="text" placeholder="Ask a question..." />
+
+      <!-- FOOTER -->
+      <div class="chat-footer">
+        <input type="text" placeholder="Enter message..." />
         <button>Send</button>
       </div>
-    </div>
-    <div class="codingnexus">
-      <a href="https://www.youtube.com/@CodingNexus">Created by ChatBot</a>
     </div>
     <script src="./main.js"></script>
   </body>
