@@ -16,14 +16,15 @@ if (!process.env.GEMINI_API_KEY) {
     process.exit(1);
 }
 
-// ✅ Use the correct model and API version
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
+// Default route
 app.get("/", (req, res) => {
     res.send("Welcome to the Google Gemini Chatbot API");
 });
 
-app.post("/message", async (req, res) => {
+// **Fixed API endpoint**: `/api/message`
+app.post("/api/message", async (req, res) => {
     try {
         console.log("✅ Received request:", req.body);
 
@@ -57,4 +58,6 @@ app.post("/message", async (req, res) => {
     }
 });
 
-app.listen(5500, () => console.log("✅ Server running on port 5500"));
+// Set correct port for Render
+const PORT = process.env.PORT || 5500;
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
