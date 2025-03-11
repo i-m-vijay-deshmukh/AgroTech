@@ -10,24 +10,15 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-// Check if API key is set
-if (!process.env.GEMINI_API_KEY) {
-    console.error("❌ ERROR: GEMINI_API_KEY is missing! Check your .env file.");
-    process.exit(1);
-}
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
 
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`;
-
-// Default route
 app.get("/", (req, res) => {
     res.send("Welcome to the Google Gemini Chatbot API");
 });
 
-// **Fixed API endpoint**: `/api/message`
 app.post("/api/message", async (req, res) => {
     try {
-        console.log("✅ Received request:", req.body);
-
         if (!req.body || !req.body.message) {
             return res.status(400).json({ error: "Message content is required." });
         }
@@ -43,14 +34,12 @@ app.post("/api/message", async (req, res) => {
         });
 
         const data = await response.json();
-        console.log("✅ Gemini Response:", data);
 
         if (data.error) {
-            throw new Error(data.error?.message || "Invalid Gemini API response");
+            throw new Error(data.error.message || "Invalid Gemini API response");
         }
 
         const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response.";
-
         res.json({ message: botReply });
     } catch (error) {
         console.error("❌ Gemini API Error:", error);
@@ -58,6 +47,5 @@ app.post("/api/message", async (req, res) => {
     }
 });
 
-// Set correct port for Render
-const PORT = process.env.PORT || 5500;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
