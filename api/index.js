@@ -8,7 +8,9 @@ dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+
+// ✅ Allow frontend requests
+app.use(cors({ origin: "*" }));  // Replace "*" with your frontend URL if needed
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
@@ -26,7 +28,7 @@ app.post("/api/code", async (req, res) => {
     try {
         const userPrompt = req.body.prompt;
         if (!userPrompt) {
-            return res.status(400).json({ error: "Prompt is required." });
+            return res.status(400).json({ error: "❌ Prompt is required." });
         }
 
         console.log(`✅ Received coding request: ${userPrompt}`);
@@ -37,9 +39,9 @@ app.post("/api/code", async (req, res) => {
             body: JSON.stringify({
                 contents: [{ parts: [{ text: `Write a full working program in any language: ${userPrompt}` }] }],
                 generationConfig: {
-                    temperature: 0.5,  // Lower for more accurate code
+                    temperature: 0.5,
                     topP: 0.9,
-                    maxOutputTokens: 4096,  // Ensures longer code responses
+                    maxOutputTokens: 4096,
                     responseMimeType: "application/json"
                 }
             })
