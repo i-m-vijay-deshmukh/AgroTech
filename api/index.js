@@ -8,9 +8,7 @@ dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
-
-// ✅ Allow frontend requests
-app.use(cors({ origin: "*" }));  // Replace "*" with your frontend URL if needed
+app.use(cors({ origin: "*" })); // Allow all origins (adjust if needed)
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
@@ -21,28 +19,27 @@ if (!GEMINI_API_KEY) {
 }
 
 app.get("/", (req, res) => {
-    res.send("Welcome to the Google Gemini-2.0-Flash Chatbot API");
+    res.send("Welcome to the Google Gemini Chatbot API!");
 });
 
-app.post("/api/code", async (req, res) => {
+// ✅ Chatbot API Route
+app.post("/api/message", async (req, res) => {
     try {
-        const userPrompt = req.body.prompt;
-        if (!userPrompt) {
-            return res.status(400).json({ error: "❌ Prompt is required." });
+        const userMessage = req.body.message;
+        if (!userMessage) {
+            return res.status(400).json({ error: "Message is required." });
         }
 
-        console.log(`✅ Received coding request: ${userPrompt}`);
+        console.log(`✅ Received message: ${userMessage}`);
 
         const response = await fetch(GEMINI_API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: `Write a full working program in any language: ${userPrompt}` }] }],
+                contents: [{ parts: [{ text: userMessage }] }],
                 generationConfig: {
-                    temperature: 0.5,
-                    topP: 0.9,
-                    maxOutputTokens: 4096,
-                    responseMimeType: "application/json"
+                    temperature: 0.7,
+                    maxOutputTokens: 500
                 }
             })
         });
@@ -50,13 +47,13 @@ app.post("/api/code", async (req, res) => {
         const data = await response.json();
         if (data.error) throw new Error(data.error.message);
 
-        const botReply = JSON.parse(data.candidates?.[0]?.content?.parts?.[0]?.text || "{}").response || "Sorry, I couldn't generate the code.";
+        const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || "I couldn't generate a response.";
 
-        res.json({ code: botReply });
+        res.json({ message: botReply });
 
     } catch (error) {
-        console.error("❌ Gemini API Error:", error);
-        res.status(500).json({ error: "Failed to generate code. Try refining your prompt." });
+        console.error("❌ Chatbot API Error:", error);
+        res.status(500).json({ error: "Failed to generate response. Try again later." });
     }
 });
 
