@@ -27,13 +27,13 @@ if (button && inputField && chatBoxBody) {
 
     scrollToBottom();
 
-    fetch("https://agrotech-7.onrender.com/api/some-endpoint", {
+    fetch("https://agrotech-7.onrender.com/api/message", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ message }) // Ensure proper JSON structure
+      body: JSON.stringify({ message })
     })
       .then(response => {
         if (!response.ok) {
