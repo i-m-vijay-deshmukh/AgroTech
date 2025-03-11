@@ -22,47 +22,41 @@ app.get("/", (req, res) => {
     res.send("Welcome to the Google Gemini-2.0-Flash Chatbot API");
 });
 
-app.post("/api/message", async (req, res) => {
+app.post("/api/code", async (req, res) => {
     try {
-        if (!req.body || !req.body.message) {
-            return res.status(400).json({ error: "Message content is required." });
+        const userPrompt = req.body.prompt;
+        if (!userPrompt) {
+            return res.status(400).json({ error: "Prompt is required." });
         }
 
-        console.log(`✅ Received request: ${req.body.message}`);
+        console.log(`✅ Received coding request: ${userPrompt}`);
 
         const response = await fetch(GEMINI_API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: req.body.message }] }],
+                contents: [{ parts: [{ text: `Write a full working program in any language: ${userPrompt}` }] }],
                 generationConfig: {
-                    temperature: 0.7,
+                    temperature: 0.5,  // Lower for more accurate code
                     topP: 0.9,
-                    maxOutputTokens: 500,
+                    maxOutputTokens: 4096,  // Ensures longer code responses
                     responseMimeType: "application/json"
                 }
             })
         });
 
         const data = await response.json();
-        console.log("✅ Gemini Response:", data);
+        if (data.error) throw new Error(data.error.message);
 
-        if (data.error) {
-            throw new Error(data.error.message || "Invalid Gemini API response");
-        }
+        const botReply = JSON.parse(data.candidates?.[0]?.content?.parts?.[0]?.text || "{}").response || "Sorry, I couldn't generate the code.";
 
-        // ✅ Extract the actual response text correctly
-        const parsedResponse = JSON.parse(data.candidates?.[0]?.content?.parts?.[0]?.text || "{}");
-        const botReply = parsedResponse.response || parsedResponse.date || "Sorry, I couldn't generate a response.";
-
-        res.json({ message: botReply });
+        res.json({ code: botReply });
 
     } catch (error) {
         console.error("❌ Gemini API Error:", error);
-        res.status(500).json({ error: error.message || "Internal Server Error" });
+        res.status(500).json({ error: "Failed to generate code. Try refining your prompt." });
     }
 });
-
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
