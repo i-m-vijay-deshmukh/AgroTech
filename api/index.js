@@ -40,10 +40,9 @@ app.post("/api/message", async (req, res) => {
             body: JSON.stringify({
                 contents: [{ parts: [{ text: req.body.message }] }],
                 generationConfig: {
-                    temperature: 0.7,  // Adjust creativity level (0 = strict, 1 = creative)
+                    temperature: 0.7,  // Adjust creativity level
                     topP: 0.9,  // Sampling method for response variation
-                    maxOutputTokens: 500,  // Control response length
-                    responseMimeType: "text/markdown"  // ✅ Ensures rich text output
+                    maxOutputTokens: 500  // Control response length
                 }
             })
         });
@@ -64,7 +63,6 @@ app.post("/api/message", async (req, res) => {
         res.status(500).json({ error: error.message || "Internal Server Error" });
     }
 });
-
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
