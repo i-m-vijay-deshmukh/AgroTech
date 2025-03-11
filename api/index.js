@@ -32,17 +32,19 @@ app.post("/api/message", async (req, res) => {
 
         console.log(`✅ Received request: ${req.body.message}`);
 
+        const promptWithEmoji = req.body.message + "\n\n(Please include emojis where appropriate!)";
+
         const response = await fetch(GEMINI_API_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: req.body.message }] }],
+                contents: [{ parts: [{ text: promptWithEmoji }] }],
                 generationConfig: {
-                    temperature: 0.7,  // Adjust creativity level
-                    topP: 0.9,  // Sampling method for response variation
-                    maxOutputTokens: 500  // Control response length
+                    temperature: 0.8,  // Higher creativity for natural emoji usage
+                    topP: 0.9,
+                    maxOutputTokens: 500
                 }
             })
         });
@@ -63,6 +65,7 @@ app.post("/api/message", async (req, res) => {
         res.status(500).json({ error: error.message || "Internal Server Error" });
     }
 });
+
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
