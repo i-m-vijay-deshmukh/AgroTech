@@ -38,7 +38,13 @@ app.post("/api/message", async (req, res) => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: req.body.message }] }]
+                contents: [{ parts: [{ text: req.body.message }] }],
+                generationConfig: {
+                    temperature: 0.7,  // Adjust creativity level (0 = strict, 1 = creative)
+                    topP: 0.9,  // Sampling method for response variation
+                    maxOutputTokens: 500,  // Control response length
+                    responseMimeType: "text/markdown"  // ✅ Ensures rich text output
+                }
             })
         });
 
@@ -50,6 +56,7 @@ app.post("/api/message", async (req, res) => {
         }
 
         const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response.";
+
         res.json({ message: botReply });
 
     } catch (error) {
@@ -57,6 +64,7 @@ app.post("/api/message", async (req, res) => {
         res.status(500).json({ error: error.message || "Internal Server Error" });
     }
 });
+
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
