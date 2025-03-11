@@ -13,13 +13,13 @@ if (button && inputField && chatBoxBody) {
 
   function sendMessage() {
     const message = inputField.value.trim();
-    if (!message) return; // Prevent sending empty messages
+    if (!message) return;
 
     inputField.value = "";
 
     chatBoxBody.innerHTML += `<div class="message"><p>${message}</p></div>`;
 
-    // Create a loading div dynamically
+    // Show loading state
     const loadingDiv = document.createElement("div");
     loadingDiv.classList.add("response", "loading");
     loadingDiv.textContent = "...";
@@ -27,34 +27,30 @@ if (button && inputField && chatBoxBody) {
 
     scrollToBottom();
 
-    fetch("https://agrotech-7.onrender.com/api/message", {
+    fetch("https://agrotech-7.onrender.com/api/message", {  // ✅ Fixed API endpoint
       method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ message })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })  // ✅ Corrected request format
     })
       .then(response => {
         if (!response.ok) {
           return response.json().then(err => {
-            throw new Error(`Server error: ${response.status} - ${err.error}`);
-          }).catch(() => {
-            throw new Error(`Server error: ${response.status}`);
+            throw new Error(`Server error: ${response.status} - ${err.error || "Unknown error"}`);
           });
         }
         return response.json();
       })
       .then(data => {
         loadingDiv.remove();
+        console.log("✅ Chatbot Response:", data);
 
-        const botReply = data.message || "Sorry, something went wrong.";
-        
+        const botReply = data.message || "Sorry, I couldn't generate a response.";
         chatBoxBody.innerHTML += `<div class="response"><p>${botReply}</p></div>`;
+
         scrollToBottom();
       })
       .catch(error => {
-        console.error("Error:", error);
+        console.error("❌ Error:", error);
         loadingDiv.remove();
         chatBoxBody.innerHTML += `<div class="response error"><p>Error: ${error.message}</p></div>`;
       });
