@@ -39,7 +39,7 @@ app.post("/api/message", async (req, res) => {
                     temperature: 0.7,
                     topP: 0.9,
                     maxOutputTokens: 500,
-                    responseMimeType: "application/json"  // ✅ Supports emojis
+                    responseMimeType: "application/json"
                 }
             })
         });
@@ -51,8 +51,9 @@ app.post("/api/message", async (req, res) => {
             throw new Error(data.error.message || "Invalid Gemini API response");
         }
 
-        // ✅ Extracting message correctly for rich text output
-        const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response.";
+        // ✅ Extract the actual response text correctly
+        const parsedResponse = JSON.parse(data.candidates?.[0]?.content?.parts?.[0]?.text || "{}");
+        const botReply = parsedResponse.response || parsedResponse.date || "Sorry, I couldn't generate a response.";
 
         res.json({ message: botReply });
 
@@ -61,6 +62,7 @@ app.post("/api/message", async (req, res) => {
         res.status(500).json({ error: error.message || "Internal Server Error" });
     }
 });
+
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
