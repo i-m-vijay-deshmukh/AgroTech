@@ -16,7 +16,7 @@ if (button && inputField && chatBoxBody) {
     if (!message) return;
 
     inputField.value = "";
-
+    
     chatBoxBody.innerHTML += `<div class="message"><p>${message}</p></div>`;
 
     // Show loading state
@@ -47,7 +47,7 @@ if (button && inputField && chatBoxBody) {
         const botReply = data.message || "Sorry, I couldn't generate a response.";
         chatBoxBody.innerHTML += `<div class="response"><p>${botReply}</p></div>`;
 
-        scrollToBottom();
+        setTimeout(scrollToBottom, 100); // ✅ Ensures scrolling occurs after rendering
       })
       .catch(error => {
         console.error("❌ Error:", error);
@@ -55,8 +55,10 @@ if (button && inputField && chatBoxBody) {
         chatBoxBody.innerHTML += `<div class="response error"><p>Error: ${error.message}</p></div>`;
       });
   }
-
   function scrollToBottom() {
-    chatBoxBody.scrollTop = chatBoxBody.scrollHeight;
+    setTimeout(() => {
+      chatBoxBody.scrollTop = chatBoxBody.scrollHeight;
+    }, 100);
   }
+  
 }
