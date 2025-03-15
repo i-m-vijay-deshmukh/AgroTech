@@ -63,7 +63,7 @@ body {
 
 /* User Message (align right) */
 .chat-box-body .message {
-  background-color: #e0e0e0;
+  background-color: #48cee8;
   color: #333333;
   margin-left: auto;
   text-align: right;
@@ -72,7 +72,7 @@ body {
 
 /* Bot Response (align left) */
 .chat-box-body .response {
-  background-color: #4a90e2;
+  background-color: #3e91f0;
   color: #ffffff;
   margin-right: auto;
   text-align: left;
