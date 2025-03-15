@@ -1,64 +1,39 @@
-const chatBox = document.querySelector(".chat-box");
-const inputField = chatBox?.querySelector("input[type='text']");
-const button = chatBox?.querySelector("button");
-const chatBoxBody = chatBox?.querySelector(".chat-box-body");
+document.addEventListener("DOMContentLoaded", function () {
+    const messageInput = document.getElementById("messageInput");
+    const sendButton = document.getElementById("sendButton");
+    const chatBoxBody = document.getElementById("chatBoxBody");
 
-if (button && inputField && chatBoxBody) {
-  button.addEventListener("click", sendMessage);
-  inputField.addEventListener("keypress", function(event) {
-    if (event.key === "Enter") {
-      sendMessage();
+    // Function to add message to chat
+    function addMessageToChat(sender, message) {
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add(sender === "user" ? "user-message" : "bot-message");
+        messageDiv.textContent = message;
+        chatBoxBody.appendChild(messageDiv);
+
+        // Auto-scroll to bottom
+        chatBoxBody.scrollTop = chatBoxBody.scrollHeight;
     }
-  });
 
-  function sendMessage() {
-    const message = inputField.value.trim();
-    if (!message) return;
+    // Function to handle sending message
+    function sendMessage() {
+        const messageText = messageInput.value.trim();
+        if (messageText === "") return;
 
-    inputField.value = "";
-    
-    chatBoxBody.innerHTML += `<div class="message"><p>${message}</p></div>`;
+        addMessageToChat("user", messageText);
+        messageInput.value = "";
 
-    // Show loading state
-    const loadingDiv = document.createElement("div");
-    loadingDiv.classList.add("response", "loading");
-    loadingDiv.textContent = "...";
-    chatBoxBody.appendChild(loadingDiv);
+        // Simulating bot response
+        setTimeout(() => {
+            addMessageToChat("bot", "I am here to help! How can I assist you?");
+        }, 1000);
+    }
 
-    scrollToBottom();
-
-    fetch("https://agrotech-7.onrender.com/api/message", {  // ✅ Fixed API endpoint
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message })  // ✅ Corrected request format
-    })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(err => {
-            throw new Error(`Server error: ${response.status} - ${err.error || "Unknown error"}`);
-          });
+    // Event listeners
+    sendButton.addEventListener("click", sendMessage);
+    messageInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            sendMessage();
         }
-        return response.json();
-      })
-      .then(data => {
-        loadingDiv.remove();
-        console.log("✅ Chatbot Response:", data);
+    });
+});
 
-        const botReply = data.message || "Sorry, I couldn't generate a response.";
-        chatBoxBody.innerHTML += `<div class="response"><p>${botReply}</p></div>`;
-
-        setTimeout(scrollToBottom, 100); // ✅ Ensures scrolling occurs after rendering
-      })
-      .catch(error => {
-        console.error("❌ Error:", error);
-        loadingDiv.remove();
-        chatBoxBody.innerHTML += `<div class="response error"><p>Error: ${error.message}</p></div>`;
-      });
-  }
-  function scrollToBottom() {
-    setTimeout(() => {
-      chatBoxBody.scrollTop = chatBoxBody.scrollHeight;
-    }, 100);
-  }
-  
-}
