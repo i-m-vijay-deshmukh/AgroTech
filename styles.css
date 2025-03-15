@@ -30,9 +30,10 @@ body {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
-  max-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column; /* Ensures proper layout */
+  height: 80vh; /* Fix chat height */
 }
-
 /* Chat Box Header */
 .chat-box-header {
   background-color: #4a90e2;
@@ -45,14 +46,13 @@ body {
 
 /* Chat Box Body */
 .chat-box-body {
+  flex: 1; /* Makes it take the remaining space */
   padding: 16px;
   overflow-y: auto;
-  max-height: calc(100vh - 180px); /* Adjusted to account for header and footer */
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-
 /* Message Styling */
 .chat-box-body .message,
 .chat-box-body .response {
@@ -86,6 +86,10 @@ body {
   padding: 12px 16px;
   background-color: #ffffff;
   border-top: 1px solid #ddd;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Input Field */
